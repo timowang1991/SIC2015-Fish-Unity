@@ -7,24 +7,23 @@ using UnityEngine.UI.Extensions;
 using System;
 
 public class BTSerial : MonoBehaviour {
-	SerialPort serial = new SerialPort("/dev/tty.KPBluetooth20-DevB", 38400);
+	SerialPort serial;
+	string selectedPortName;
 
-	public GameObject dropDownListGO;
-	DropDownList dropDownList;
+	public GameObject portDropDownListGO;
+	DropDownList portDropDownList;
+
+	public GameObject baudDropDownListGO;
+	DropDownList baudDropDownList;
 
 	// Use this for initialization
 	void Start () {
-		dropDownList = dropDownListGO.GetComponent<DropDownList>();
-		dropDownList.OnSelectionChanged += OnPortSelect;
+		portDropDownList = portDropDownListGO.GetComponent<DropDownList>();
+		portDropDownList.OnSelectionChanged += OnPortSelect;
 		populateDropDownList();
 
-
-//		try{
-//			serial.Open();
-//		}catch (UnityException unityException){
-//			Debug.Log("UnityException : " + unityException.Message);
-//		}
-
+		baudDropDownList = baudDropDownListGO.GetComponent<DropDownList>();
+		baudDropDownList.OnSelectionChanged += OnBaudSelect;
 	}
 	
 	// Update is called once per frame
@@ -37,11 +36,11 @@ public class BTSerial : MonoBehaviour {
 
 	void populateDropDownList(){
 		List<string> portNames = GetPortNames();
-		dropDownList.Items = new List<DropDownListItem>();
+		portDropDownList.Items = new List<DropDownListItem>();
 
 		foreach(string portName in portNames){
 			DropDownListItem item = new DropDownListItem(portName);
-			dropDownList.Items.Add(item);
+			portDropDownList.Items.Add(item);
 		}
 
 //		dropDownList.ItemsToDisplay = dropDownList.Items.Count;
@@ -74,6 +73,11 @@ public class BTSerial : MonoBehaviour {
 	}
 
 	void OnPortSelect(int idx){
-		Debug.Log("Port selected : " + dropDownList.Items[idx].Caption);
+		Debug.Log("Port selected : " + portDropDownList.Items[idx].Caption);
+		selectedPortName = portDropDownList.Items[idx].Caption;
+	}
+
+	void OnBaudSelect(int idx){
+		Debug.Log("Baud selected : " + baudDropDownList.Items[idx].Caption);
 	}
 }
