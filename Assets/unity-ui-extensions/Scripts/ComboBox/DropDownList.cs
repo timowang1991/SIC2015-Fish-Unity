@@ -194,8 +194,8 @@ namespace UnityEngine.UI.Extensions
 
 		private void OnItemClicked(int indx)
 		{
-			Debug.Log("item " + indx + " clicked");
-			if (indx != _selectedIndex && OnSelectionChanged != null) OnSelectionChanged(indx);
+//			Debug.Log("item " + indx + " clicked");
+			if (OnSelectionChanged != null) OnSelectionChanged(indx);
 
 			_selectedIndex = indx;
 			ToggleDropdownPanel(true);

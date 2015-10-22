@@ -28,8 +28,8 @@ public class BTSerial : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-//		if (Input.anyKey){
-//			Debug.Log("anyKey is pressed");
+//		if (Input.GetKeyDown(KeyCode.A)){
+//			Debug.Log("A is pressed");
 //			serial.Write("a");
 //		}
 	}
@@ -58,13 +58,13 @@ public class BTSerial : MonoBehaviour {
 			foreach (string dev in ttys) {
 				if (dev.StartsWith ("/dev/tty.")){
 					serial_ports.Add (dev);
-					Debug.Log (dev);
+//					Debug.Log (dev);
 				}
 			}
 			foreach (string dev in cuFiles) {
 				if (dev.StartsWith ("/dev/cu.")){
 					serial_ports.Add (dev);
-					Debug.Log (dev);
+//					Debug.Log (dev);
 				}
 			}
 		}
@@ -73,11 +73,41 @@ public class BTSerial : MonoBehaviour {
 	}
 
 	void OnPortSelect(int idx){
-		Debug.Log("Port selected : " + portDropDownList.Items[idx].Caption);
+//		Debug.Log("Port selected : " + portDropDownList.Items[idx].Caption);
 		selectedPortName = portDropDownList.Items[idx].Caption;
+
+		try{
+			if(serial != null && serial.IsOpen){
+				serial.Close();
+			}
+		}catch(Exception e){
+			Debug.Log ("OnPortSelect error : " + e.Message);
+		}
 	}
 
 	void OnBaudSelect(int idx){
-		Debug.Log("Baud selected : " + baudDropDownList.Items[idx].Caption);
+//		Debug.Log("Baud selected : " + baudDropDownList.Items[idx].Caption);
+		int baudRate = Int32.Parse(baudDropDownList.Items[idx].Caption);
+
+		try{
+			if(serial != null && serial.IsOpen){
+				serial.Close();
+			}
+
+			serial = new SerialPort(selectedPortName, baudRate);
+			serial.Open();
+		}catch(Exception e){
+			Debug.Log("OnBaudSelect error : " + e.Message);
+		}
+	}
+
+	void sendData(string data){
+		try{
+			if(serial != null && serial.IsOpen){
+				serial.Write(data);
+			}
+		}catch(Exception e){
+			Debug.Log ("sendData error : " + e.Message);
+		}
 	}
 }
