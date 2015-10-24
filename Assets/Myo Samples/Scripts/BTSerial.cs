@@ -24,6 +24,8 @@ public class BTSerial : MonoBehaviour {
 
 		baudDropDownList = baudDropDownListGO.GetComponent<DropDownList>();
 		baudDropDownList.OnSelectionChanged += OnBaudSelect;
+
+
 	}
 	
 	// Update is called once per frame
@@ -95,13 +97,17 @@ public class BTSerial : MonoBehaviour {
 			}
 
 			serial = new SerialPort(selectedPortName, baudRate);
+
+			serial.DtrEnable = true;
+			serial.Handshake = Handshake.None;
+			serial.DataReceived += ReceiveDataHandler;
 			serial.Open();
 		}catch(Exception e){
 			Debug.Log("OnBaudSelect error : " + e.Message);
 		}
 	}
 
-	void sendData(string data){
+	public void SendData(string data){
 		try{
 			if(serial != null && serial.IsOpen){
 				serial.Write(data);
@@ -109,5 +115,11 @@ public class BTSerial : MonoBehaviour {
 		}catch(Exception e){
 			Debug.Log ("sendData error : " + e.Message);
 		}
+	}
+
+	void ReceiveDataHandler(object sender, SerialDataReceivedEventArgs e){
+		SerialPort port = (SerialPort) sender;
+		string indata = port.ReadExisting();
+		Debug.Log("Data Received : " + indata);
 	}
 }
